@@ -315,22 +315,17 @@ async function getToken(){
   return d.tenant_access_token;
 }
 
-async function sendToFeishu(name,score,ok,wr,sk){
+async function sendToFeishu(name,score,duration,wrongNums){
   try{
     const token=await getToken();
-    const now=new Date();
-    const timeStr=now.getFullYear()+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     await fetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${FS.appToken}/tables/${FS.tableId}/records`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body:JSON.stringify({fields:{
         '姓名':name,
         '分数':score,
-        '答对题数':ok,
-        '答错题数':wr,
-        '未答题数':sk,
-        '是否通过':score>=60?'通过':'未通过',
-        '提交时间':timeStr
+        '答题时长':duration,
+        '错误题目序号':wrongNums,
       }})
     });
     console.log('成绩已同步到飞书多维表格');
@@ -355,13 +350,15 @@ function doSubmit(){
   done=true;
   clearInterval(iv);
 
-  let ok=0,wr=0,sk=0;
+  let ok=0,wr=0,sk=0,wrongList=[];
   QS.forEach((q,i)=>{
     const ua=[...sel[i]].sort();
     const ca=q.a.slice().sort();
     const correct=arrEq(ua,ca);
     const skipped=ua.length===0;
-    if(skipped)sk++;else if(correct)ok++;else wr++;
+    if(skipped){sk++;wrongList.push(i);}
+    else if(correct)ok++;
+    else{wr++;wrongList.push(i);}
     document.getElementById('c-'+i).className='qcard '+(skipped||!correct?'wrong':'correct');
     q.o.forEach((_,j)=>{
       const el=document.getElementById(`o-${i}-${j}`);
@@ -373,6 +370,9 @@ function doSubmit(){
 
   const score=Math.round(ok*5);
   const pass=score>=60;
+  const duration=1800-secs; // 已用秒数
+  const durationMin=Math.floor(duration/60)+'分'+String(duration%60).padStart(2,'0')+'秒';
+  const wrongNums=wrongList.map(i=>i+1).join('、')||'无';
   document.getElementById('rname').textContent=name+' 同学';
   document.getElementById('rscore').textContent=score;
   document.getElementById('rok').textContent=ok;
@@ -400,7 +400,7 @@ function doSubmit(){
   document.getElementById('sbtn').disabled=true;
 
   // 异步提交到飞书，不阻塞页面
-  sendToFeishu(name,score,ok,wr,sk);
+  sendToFeishu(name,score,durationMin,wrongNums);
 }
 
 function doReview(){
