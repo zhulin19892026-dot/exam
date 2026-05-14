@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026年4月产品考试</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --indigo:#4f46e5;--indigo-d:#3730a3;--indigo-l:#eef2ff;--indigo-m:#c7d2fe;
+  --green:#16a34a;--green-l:#f0fdf4;--green-m:#86efac;
+  --red:#dc2626;--red-l:#fef2f2;--red-m:#fca5a5;
+  --text:#111827;--text2:#374151;--text3:#6b7280;
+  --gray-l:#f9fafb;--gray-b:#e5e7eb;
+  --radius:14px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f8;color:var(--text);min-height:100vh}
+
+.hero{background:linear-gradient(135deg,#4f46e5 0%,#6d28d9 60%,#7c3aed 100%);position:sticky;top:0;z-index:100}
+.hero-inner{max-width:760px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero-title{color:#fff;font-size:15px;font-weight:700;letter-spacing:.3px}
+.hero-sub{color:rgba(255,255,255,.65);font-size:12px;margin-top:2px}
+.timer-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 16px;color:#fff;font-size:14px;font-weight:700;transition:all .3s}
+.timer-pill.warning{background:rgba(253,230,138,.2);border-color:rgba(253,230,138,.5);color:#fde68a}
+.timer-pill.danger{background:rgba(252,165,165,.2);border-color:rgba(252,165,165,.5);color:#fca5a5;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+.t-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.prog-strip{height:4px;background:rgba(255,255,255,.18)}
+.prog-fill{height:100%;background:rgba(255,255,255,.75);transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 100px}
+
+.top-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 12px rgba(79,70,229,.08),0 1px 3px rgba(0,0,0,.05);padding:22px 24px;margin-bottom:18px}
+.name-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--gray-b)}
+.name-icon{width:40px;height:40px;border-radius:11px;background:var(--indigo-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.name-icon svg{width:21px;height:21px;stroke:var(--indigo);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.name-field{flex:1}
+.name-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px}
+.name-inp{width:100%;border:1.5px solid var(--gray-b);border-radius:9px;padding:9px 13px;font-size:15px;color:var(--text);outline:none;font-family:inherit;background:#fafafa;transition:border-color .15s,box-shadow .15s}
+.name-inp:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(79,70,229,.1);background:#fff}
+.name-inp.err{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1);background:var(--red-l)}
+.name-err{font-size:12px;color:var(--red);margin-top:5px;display:none}
+.name-err.on{display:block}
+.meta-row{display:grid;grid-template-columns:repeat(4,1fr)}
+.meta-col{text-align:center;padding:2px 0}
+.meta-col+.meta-col{border-left:1px solid var(--gray-b)}
+.meta-val{font-size:18px;font-weight:800;color:var(--text)}
+.meta-lab{font-size:11px;color:var(--text3);margin-top:3px}
+
+.qcard{background:#fff;border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);margin-bottom:14px;border:1.5px solid transparent;transition:border-color .25s,box-shadow .25s;overflow:hidden}
+.qcard.answered{border-color:var(--indigo-m);box-shadow:0 4px 20px rgba(79,70,229,.1)}
+.qcard.correct{border-color:var(--green-m);box-shadow:0 4px 20px rgba(22,163,74,.1)}
+.qcard.wrong{border-color:var(--red-m);box-shadow:0 4px 20px rgba(220,38,38,.08)}
+.qcard-top{padding:18px 20px 14px}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.q-num{width:27px;height:27px;border-radius:7px;background:var(--indigo-l);color:var(--indigo);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+.qcard.correct .q-num{background:var(--green-l);color:var(--green)}
+.qcard.wrong .q-num{background:var(--red-l);color:var(--red)}
+.tchip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
+.tc-s{background:#ede9fe;color:#5b21b6}
+.tc-m{background:#dbeafe;color:#1e40af}
+.tc-j{background:#d1fae5;color:#065f46}
+.q-txt{font-size:15px;line-height:1.75;color:var(--text);font-weight:500}
+.opts{display:flex;flex-direction:column;gap:7px;padding:0 20px 18px}
+.opt{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--gray-b);cursor:pointer;transition:all .15s;background:#fafafa;user-select:none;-webkit-tap-highlight-color:transparent}
+.opt:hover{border-color:var(--indigo-m);background:var(--indigo-l)}
+.opt.sel{border-color:var(--indigo);background:var(--indigo-l)}
+.opt.ok{border-color:var(--green);background:var(--green-l)}
+.opt.bad{border-color:var(--red);background:var(--red-l)}
+.opt-mk{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gray-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0;background:#fff;transition:all .15s}
+.opt-mk.sq{border-radius:6px}
+.opt.sel .opt-mk{border-color:var(--indigo);background:var(--indigo);color:#fff}
+.opt.ok .opt-mk{border-color:var(--green);background:var(--green);color:#fff}
+.opt.bad .opt-mk{border-color:var(--red);background:var(--red);color:#fff}
+.opt-txt{font-size:14px;color:var(--text2);line-height:1.55;flex:1}
+.opt.sel .opt-txt{color:#3730a3;font-weight:500}
+.opt.ok .opt-txt{color:#15803d;font-weight:500}
+.opt.bad .opt-txt{color:#b91c1c}
+.ax{margin:0 20px 18px;padding:13px 16px;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border-radius:10px;border-left:3px solid var(--indigo);display:none}
+.ax.on{display:block}
+.ax-ttl{font-size:11px;font-weight:700;color:var(--indigo);letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px}
+.ax-body{font-size:13px;color:#4338ca;line-height:1.72}
+
+.btm{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--gray-b);padding:12px 20px;z-index:100}
+.btm-in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.prog-txt{font-size:13px;color:var(--text3)}
+.prog-txt b{color:var(--indigo);font-weight:700}
+.btm-r{display:flex;align-items:center;gap:12px}
+.mini-bar{width:90px;height:6px;background:var(--gray-b);border-radius:99px;overflow:hidden}
+.mini-fill{height:100%;background:linear-gradient(90deg,var(--indigo),#7c3aed);border-radius:99px;transition:width .3s}
+.sub-btn{background:linear-gradient(135deg,var(--indigo),#7c3aed);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:all .15s;box-shadow:0 2px 8px rgba(79,70,229,.3)}
+.sub-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,70,229,.4)}
+.sub-btn:active{transform:translateY(0)}
+.sub-btn:disabled{background:#a5b4fc;cursor:not-allowed;transform:none;box-shadow:none}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(17,24,39,.65);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.overlay.on{display:flex}
+.res-card{background:#fff;border-radius:20px;padding:32px 28px 28px;max-width:420px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.22);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.res-name{font-size:15px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.ring-wrap{width:128px;height:128px;margin:0 auto 6px;position:relative}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
+.ring-score{font-size:40px;font-weight:800;line-height:1;color:var(--text)}
+.ring-unit{font-size:13px;color:var(--text3)}
+.res-badge{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;padding:5px 16px;border-radius:99px;margin:6px 0 14px}
+.res-badge.pass{background:var(--green-l);color:var(--green)}
+.res-badge.fail{background:var(--red-l);color:var(--red)}
+.dots{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:16px}
+.d{width:13px;height:13px;border-radius:50%}
+.d.ok{background:var(--green-m)}
+.d.no{background:var(--red-m)}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat-box{background:var(--gray-l);border-radius:10px;padding:12px 6px}
+.stat-n{font-size:24px;font-weight:800}
+.stat-n.c{color:var(--green)}
+.stat-n.w{color:var(--red)}
+.stat-n.s{color:var(--text3)}
+.stat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.res-msg{font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:20px;padding:12px 14px;background:var(--gray-l);border-radius:10px;text-align:left}
+.rev-btn{width:100%;background:linear-gradient(135deg,var(--indigo),#7c3aed);color:#fff;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 12px rgba(79,70,229,.3)}
+.rev-btn:hover{box-shadow:0 6px 20px rgba(79,70,229,.4)}
+
+@media(max-width:500px){
+  .meta-row{grid-template-columns:repeat(2,1fr);gap:12px 0}
+  .meta-col+.meta-col{border-left:none}
+  .meta-col:nth-child(3),.meta-col:nth-child(4){border-top:1px solid var(--gray-b);padding-top:12px}
+  .wrap{padding:16px 12px 100px}
+  .qcard-top,.opts{padding-left:16px;padding-right:16px}
+  .q-txt{font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-title">2026年4月产品知识考试</div>
+      <div class="hero-sub">PatSnap 智慧芽 · CS 团队专项考核</div>
+    </div>
+    <div class="timer-pill" id="tpill">
+      <div class="t-dot"></div>
+      <span id="ttext">30:00</span>
+    </div>
+  </div>
+  <div class="prog-strip"><div class="prog-fill" id="hprog" style="width:0%"></div></div>
+</div>
+
+<div class="wrap">
+  <div class="top-card">
+    <div class="name-row">
+      <div class="name-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="name-field">
+        <div class="name-lbl">考试姓名</div>
+        <input class="name-inp" id="ninp" type="text" placeholder="请输入您的真实姓名" maxlength="20" autocomplete="name"/>
+        <div class="name-err" id="nerr">⚠ 请先填写姓名再提交答卷</div>
+      </div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-col"><div class="meta-val">20</div><div class="meta-lab">题目数量</div></div>
+      <div class="meta-col"><div class="meta-val">100</div><div class="meta-lab">满分</div></div>
+      <div class="meta-col"><div class="meta-val">30min</div><div class="meta-lab">考试时长</div></div>
+      <div class="meta-col"><div class="meta-val">60分</div><div class="meta-lab">及格线</div></div>
+    </div>
+  </div>
+  <div id="qbox"></div>
+</div>
+
+<div class="btm">
+  <div class="btm-in">
+    <div class="prog-txt">已答 <b id="ansn">0</b> / 20 题</div>
+    <div class="btm-r">
+      <div class="mini-bar"><div class="mini-fill" id="mfill" style="width:0%"></div></div>
+      <button class="sub-btn" id="sbtn" onclick="doSubmit()">提交答卷</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov">
+  <div class="res-card">
+    <div class="res-name" id="rname"></div>
+    <div class="ring-wrap">
+      <svg width="128" height="128" viewBox="0 0 128 128">
+        <circle cx="64" cy="64" r="54" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+        <circle id="rarc" cx="64" cy="64" r="54" fill="none" stroke="#4f46e5" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"
+          style="transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1)"/>
+      </svg>
+      <div class="ring-num">
+        <div class="ring-score" id="rscore">0</div>
+        <div class="ring-unit">分</div>
+      </div>
+    </div>
+    <div class="res-badge" id="rbadge"></div>
+    <div class="dots" id="rdots"></div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-n c" id="rok">0</div><div class="stat-l">答对</div></div>
+      <div class="stat-box"><div class="stat-n w" id="rwr">0</div><div class="stat-l">答错</div></div>
+      <div class="stat-box"><div class="stat-n s" id="rsk">0</div><div class="stat-l">未答</div></div>
+    </div>
+    <div class="res-msg" id="rmsg"></div>
+    <button class="rev-btn" onclick="doReview()">查看答案解析</button>
+  </div>
+</div>
+
+<script>
+const QS=[
+  {t:'single',q:'FTO Agent v2026-04-15 新版本的查全率突破了多少？',o:['60+%','70+%','80+%','90+%'],a:[2],ex:'FTO Agent 新版本引入了多种检索算法和智能策略调度，查全率突破 80+%，相比传统方式的 60-70% 有显著提升。'},
+  {t:'single',q:'使用 FTO Agent 完成一次 FTO 分析，通常需要多长时间？',o:['2-8 周','1-2 天','20-30 分钟','3-5 分钟'],a:[2],ex:'FTO Agent 将传统需要 2-8 周的分析缩短到 20-30 分钟，让企业能快速做出上市决策。'},
+  {t:'single',q:'FTO Agent 新版本的工作空间集成，目前支持与哪些功能无缝集成？',o:['专利初筛、技术特征比对','情报简报、检索式监控','AI 标引、自定义分析','专利下载、同族拓展'],a:[0],ex:'工作空间集成目前支持从工作空间导入专利初筛和技术特征比对结果，分析完成后可直接保存回工作空间。'},
+  {t:'single',q:'FTO Agent 新版本在法律状态选项上新增了哪个选项？',o:['已失效专利','PCT 指定期内','审查中专利','已撤回专利'],a:[1],ex:'法律状态选项扩展：在输入页面新增「PCT 指定期内」选项，适用于国际化产品的 FTO 分析。'},
+  {t:'single',q:'FTO Agent 的同专利文本聚合功能，默认优先展示哪个版本？',o:['最早公开版本','申请版本','最新版本（如授权专利或最新公开版本）','用户上次查看的版本'],a:[2],ex:'同专利文本聚合智能合并同一专利的多个文档版本，优先展示最新版本，用户可手动切换查看其他版本。'},
+  {t:'single',q:'FTO Agent 智能策略调度支持多少种检索策略？',o:['5+ 种','10+ 种','20+ 种','50+ 种'],a:[2],ex:'FTO Agent 的智能策略调度能够自动判断和调度 20+ 种检索策略，确保对相关专利的全面覆盖。'},
+  {t:'single',q:'情报简报功能升级后，创建过程使用哪种模型？',o:['美国模型','欧洲模型','中国模型','全球通用模型'],a:[2],ex:'情报简报升级后，创建过程使用中国模型，响应速度更快。'},
+  {t:'single',q:'首页（All-in-one）升级后引入了哪个核心概念？',o:['工作流','智能体（Agent）','数据看板','知识图谱'],a:[1],ex:'首页升级引入"智能体"概念，支持多种 Agent 的自主调用，也支持用户直接选择或由系统智能判断调用哪个 Agent。'},
+  {t:'single',q:'找方案（Trace）功能升级后，方案质量提升的依据是什么？',o:['基于专利文献进行嫁接','基于技术文献进行嫁接','基于用户历史行为分析','基于行业标准数据库'],a:[1],ex:'找方案（Trace）升级后，方案质量提升，基于技术文献进行嫁接，并增加了概念图和视频，便于理解方案构想。'},
+  {t:'single',q:'Q1 客户咨询中，集中反映的情报简报问题主要是哪类？',o:['内容质量不准确','导出、分享、权限及版本差异','加载速度过慢','不支持中文内容'],a:[1],ex:'Q1 咨询集中于情报简报的导出、分享、权限及版本差异等问题。'},
+  {t:'single',q:'FTO Agent 左侧流程追踪面板的主要作用是什么？',o:['展示历史分析记录','清晰展示当前执行步骤和具体操作','显示积分使用情况','提供检索式编辑功能'],a:[1],ex:'左侧流程追踪面板清晰展示当前执行步骤和具体操作，用户可点击每个步骤查看完整的执行结果。'},
+  {t:'single',q:'情报简报后续规划中，计划支持哪项功能以满足客户特定需求？',o:['支持语音播报','支持定制化简报模板','支持自动翻译','支持批量生成'],a:[1],ex:'情报简报后续规划：计划支持定制化简报模板，以满足客户对特定技术（如国外技术）的关注需求。'},
+  {t:'multi',q:'FTO Agent 新版本相比传统 FTO 分析方式，有哪些优势？（多选）',o:['分析时间大幅缩短（20-30 分钟 vs 2-8 周）','查全率更高（80+% vs 60-70%）','AI 驱动，结果更稳定一致','支持工作空间集成，协作效率更高'],a:[0,1,2,3],ex:'FTO Agent 在分析时间、查全率、结果一致性、协作效率上均优于传统方式，成本也显著降低。'},
+  {t:'multi',q:'FTO Agent 主要面向哪些核心客户群体？（多选）',o:['企业 IPR 部门（知识产权管理）','研发工程师团队','专利服务机构和代理人','专利律师事务所'],a:[0,1,2,3],ex:'核心客户群体包括企业 IPR 部门、研发工程师团队、专利服务机构和代理人，以及专利律师事务所。'},
+  {t:'multi',q:'情报简报功能升级后，界面与流程方面有哪些改进？（多选）',o:['简报创建与列表页合并','采用对话式创建','详情页信息更透明，支持编辑功能','支持批量自动发送给所有用户'],a:[0,1,2],ex:'界面优化：创建与列表页合并，采用对话式创建，详情页信息更透明且支持编辑。批量自动发送不在此次升级范围内。'},
+  {t:'multi',q:'FTO Agent 使用流程中，以下哪些步骤是正确的？（多选）',o:['从工作空间导入专利初筛或技术特征比对数据','选择检索策略和法律状态选项','在左侧流程面板查看分析进度和执行细节','分析结果直接保存回工作空间供团队使用'],a:[0,1,2,3],ex:'完整使用流程：导入数据 → 启动分析 → 实时追踪 → 查看结果 → 保存输出，以上步骤均正确。'},
+  {t:'multi',q:'客户反映对 Eureka 首页新版本的哪些功能有期望？（多选）',o:['支持工作空间联动','上传附件提问','更丰富的专利分析能力','支持语音输入检索式'],a:[0,1,2],ex:'Q1 客户反馈中，期望支持工作空间联动、上传附件提问及更丰富的专利分析能力，语音输入不在反馈列表中。'},
+  {t:'judge',q:'FTO Agent 的查全率 80+% 表示在任何领域都能达到这个覆盖率，不受领域影响。',o:['正确','错误'],a:[1],ex:'查全率 80+% 是在现有检索策略下的覆盖率，某些特殊领域的专利可能需要定制化策略，并非所有领域都能保证达到该数值。'},
+  {t:'judge',q:'情报简报升级后的 Skill 功能，支持创建和应用个性化 Skill，可基于公司特定业务流程定制化工作流。',o:['正确','错误'],a:[0],ex:'Skill 功能确实支持创建和应用个性化 Skill，可基于公司特定业务流程（如加入裁剪工具）定制化工作流。'},
+  {t:'judge',q:'找方案（Trace）功能升级后，交互默认展开所有信息分支，不支持收敛。',o:['正确','错误'],a:[1],ex:'找方案（Trace）升级后交互更简洁，默认收敛信息，同时支持多分支探索和返回，并非默认展开所有信息。'},
+];
+
+const LABS='ABCD';
+const sel=QS.map(()=>new Set());
+let done=false,secs=1800,iv;
+
+function tchip(t){
+  if(t==='single')return['单选题','tc-s'];
+  if(t==='multi')return['多选题','tc-m'];
+  return['判断题','tc-j'];
+}
+
+function render(){
+  document.getElementById('qbox').innerHTML=QS.map((q,i)=>{
+    const[tl,tc]=tchip(q.t);
+    const multi=q.t==='multi';
+    const opts=q.o.map((o,j)=>{
+      const mk=multi?`<div class="opt-mk sq">${LABS[j]}</div>`:`<div class="opt-mk">${LABS[j]}</div>`;
+      return `<div class="opt" id="o-${i}-${j}" onclick="pick(${i},${j})">${mk}<div class="opt-txt">${o}</div></div>`;
+    }).join('');
+    return `<div class="qcard" id="c-${i}">
+      <div class="qcard-top">
+        <div class="q-meta"><div class="q-num" id="n-${i}">${i+1}</div><span class="tchip ${tc}">${tl}</span></div>
+        <div class="q-txt">${q.q}</div>
+      </div>
+      <div class="opts">${opts}</div>
+      <div class="ax" id="ax-${i}"><div class="ax-ttl">答案解析</div><div class="ax-body">${q.ex}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function pick(qi,oi){
+  if(done)return;
+  const q=QS[qi];
+  if(q.t!=='multi'){sel[qi].clear();sel[qi].add(oi);}
+  else{sel[qi].has(oi)?sel[qi].delete(oi):sel[qi].add(oi);}
+  refreshCard(qi);
+  upd();
+}
+
+function refreshCard(qi){
+  const has=sel[qi].size>0;
+  document.getElementById('c-'+qi).className='qcard'+(has?' answered':'');
+  QS[qi].o.forEach((_,j)=>{
+    const el=document.getElementById(`o-${qi}-${j}`);
+    el.className='opt'+(sel[qi].has(j)?' sel':'');
+  });
+}
+
+function upd(){
+  const n=sel.filter(s=>s.size>0).length;
+  const pct=(n/20*100)+'%';
+  document.getElementById('ansn').textContent=n;
+  document.getElementById('mfill').style.width=pct;
+  document.getElementById('hprog').style.width=pct;
+}
+
+function startTimer(){
+  const pill=document.getElementById('tpill');
+  const txt=document.getElementById('ttext');
+  iv=setInterval(()=>{
+    secs--;
+    txt.textContent=String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
+    if(secs<=300)pill.className='timer-pill warning';
+    if(secs<=60)pill.className='timer-pill danger';
+    if(secs<=0){clearInterval(iv);doSubmit();}
+  },1000);
+}
+
+// ── 飞书配置 ──────────────────────────────────────────────────────────────────
+const FS={
+  appId:'cli_a9391e4df163dced',
+  appSecret:'wA5PtlT4IhFVMHsTJXWDBPXVsYEUVvo3',
+  appToken:'PbU0bK3cnayNXHsGpJDcvOAknid',
+  tableId:'tblxyMe7DRq3qpTM',
+};
+
+async function getToken(){
+  const r=await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({app_id:FS.appId,app_secret:FS.appSecret})
+  });
+  const d=await r.json();
+  return d.tenant_access_token;
+}
+
+async function sendToFeishu(name,score,ok,wr,sk){
+  try{
+    const token=await getToken();
+    const now=new Date();
+    const timeStr=now.getFullYear()+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    await fetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${FS.appToken}/tables/${FS.tableId}/records`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({fields:{
+        '姓名':name,
+        '分数':score,
+        '答对题数':ok,
+        '答错题数':wr,
+        '未答题数':sk,
+        '是否通过':score>=60?'通过':'未通过',
+        '提交时间':timeStr
+      }})
+    });
+    console.log('成绩已同步到飞书多维表格');
+  }catch(e){
+    console.warn('飞书同步失败，不影响考试结果：',e);
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function arrEq(a,b){return a.length===b.length&&[...a].every(v=>b.includes(v))}
+
+function doSubmit(){
+  if(done)return;
+  const name=document.getElementById('ninp').value.trim();
+  if(!name){
+    document.getElementById('ninp').classList.add('err');
+    document.getElementById('nerr').classList.add('on');
+    document.getElementById('ninp').focus();
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+  done=true;
+  clearInterval(iv);
+
+  let ok=0,wr=0,sk=0;
+  QS.forEach((q,i)=>{
+    const ua=[...sel[i]].sort();
+    const ca=q.a.slice().sort();
+    const correct=arrEq(ua,ca);
+    const skipped=ua.length===0;
+    if(skipped)sk++;else if(correct)ok++;else wr++;
+    document.getElementById('c-'+i).className='qcard '+(skipped||!correct?'wrong':'correct');
+    q.o.forEach((_,j)=>{
+      const el=document.getElementById(`o-${i}-${j}`);
+      el.onclick=null;
+      el.className='opt'+(q.a.includes(j)?' ok':sel[i].has(j)?' bad':'');
+    });
+    document.getElementById('ax-'+i).classList.add('on');
+  });
+
+  const score=Math.round(ok*5);
+  const pass=score>=60;
+  document.getElementById('rname').textContent=name+' 同学';
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rok').textContent=ok;
+  document.getElementById('rwr').textContent=wr;
+  document.getElementById('rsk').textContent=sk;
+
+  const arc=document.getElementById('rarc');
+  arc.style.stroke=pass?'#16a34a':'#dc2626';
+  setTimeout(()=>{arc.style.strokeDashoffset=339.3*(1-score/100);},120);
+
+  const badge=document.getElementById('rbadge');
+  badge.className='res-badge '+(pass?'pass':'fail');
+  badge.textContent=pass?'✓ 恭喜通过！':'✗ 本次未通过';
+
+  document.getElementById('rmsg').textContent=pass
+    ?'🎉 太棒了！你对产品知识掌握得很扎实，继续保持！'
+    :'📖 本次未通过，建议结合解析认真复习，下次加油！';
+
+  document.getElementById('rdots').innerHTML=QS.map((q,i)=>{
+    const ok2=arrEq([...sel[i]].sort(),q.a.slice().sort());
+    return `<div class="d ${ok2?'ok':'no'}" title="第${i+1}题：${ok2?'正确':'错误'}"></div>`;
+  }).join('');
+
+  document.getElementById('ov').classList.add('on');
+  document.getElementById('sbtn').disabled=true;
+
+  // 异步提交到飞书，不阻塞页面
+  sendToFeishu(name,score,ok,wr,sk);
+}
+
+function doReview(){
+  document.getElementById('ov').classList.remove('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render();
+startTimer();
+document.getElementById('ninp').addEventListener('input',function(){
+  this.classList.remove('err');
+  document.getElementById('nerr').classList.remove('on');
+});
+</script>
+</body>
+</html>
